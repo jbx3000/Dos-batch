@@ -1,0 +1,247 @@
+DATA TYPES
+
+  numbers
+
+  string 
+
+VARIABLES
+
+  %username% - gets value of variable
+
+  set = allows access to variables, set varname= will remove that environment variable
+
+STRING CONCATENATION
+  
+  set string=John
+  set string=%string% Hammond
+
+  echo %string% results in 'Jon Hammond'
+
+echo. - displays a blank line
+
+help - command to display list of availiable commands
+
+C:\>date /t
+
+C:\>echo %date%
+
+@ - stops command from displaying in the prompt
+
+@echo off
+
+escape character is %%
+
+echo this is a %%problem%%
+  this is a %%problem%%
+
+ctrl-shift-esc - task manager
+
+echo hi you | clip - copy output of echo command to the clipboard
+
+clip < temp.tmp
+
+wmic product get name - get list of all installed programswmic can also be used to uninstall programs
+
+type filename = at command line to display to screen
+
+Percent expansion is done when a line or a complete parenthesis block is parsed, before the code will be executed.
+But to solve this you can use the delayed expansion, this doesn't expand at parse time, it expands just at execution time.
+
+EnableDelayedExpansion adds an additional syntax to expand variables: !var!.
+The percent expansion %var% is still availabe and isn't changed by the delayed expansion.
+The delayed expansion of !var! is done when the expression is executed, in spite of %var%, that will be expanded in the moment of parsing (complete code blocks), before any of the commands in the blocks are executed.
+
+setlocal EnableDelayedExpansion
+
+if exist "!_REALPATH!\tomcat-!TOMCAT_VER2!" (
+  set "CATALINA_HOME=!_REALPATH!\tomcat-!TOMCAT_VER2!"
+  set "TOMCAT_VER=!TOMCAT_VER2!"
+  echo !TOMCAT_VER!
+) else if exist "!TOMCAT_VER2!" (
+  set "CATALINA_HOME=!TOMCAT_VER2!"
+  set "TOMCAT_VER=!TOMCAT_VER2!"
+  echo !TOMCAT_VER!
+)
+
+for /F ["options"] %%parameter in (Filename) do command
+
+for /F ["options"] %%parameter in ("Text string to process") do command
+
+OPTIONS
+  delims=xxx, default= a space
+    skip=n (eg 1,2) number of lines to skip at beginning of file (default=0)
+    eol=; (any character) character at the start of each line to indicate a comment. default is a semi-colon
+    tokens=n (eg 1,2) specifies which numbered items to read from each line, default equals 1
+    usebackq use alternative quoting style, use double quotes for long file names including spaces in "filename"
+      use single quotes for 'Text string to process'
+      use back quotes for 'command to process'
+
+if [not] [/I] string1==string2 commands
+if [not] [/I] string1 <comparison operator> string2 commands
+if [not] [/I] string1 <comparison operator> string2 commands else (some other commands)
+
+Nested if
+  if condition (
+    if othercondition(
+    command to be executed if both conditions are true
+    )
+    )
+    
+Grouping operators
+
+  ((a+b)*(c+d))
+
+Arithmetic operators
+
+  + - * / %
+
+Logical shift and rediection
+
+  >> << > <
+
+Assignment operator
+
+  += -= *= /= %=
+
+Multiple commands
+
+  &&
+
+Pipe operator
+
+  |
+
+  example: echo y | del test (where test is a directory)
+
+Relational operators
+
+  EQU NEQ LSS LEQ GTR GEQ NOT
+
+Batch Parameter Description
+%~1 Expands %1 and removes surrounding quotation marks.
+%~f1  Expands %1 to a fully qualified path.
+%~d1  Expands %1 to a drive letter only.
+%~p1  Expands %1 to a path only.
+%~n1  Expands %1 to a file name only.
+%~x1  Expands %1 to a file name extension only.
+%~s1  Expands %1 to a fully qualified path that contains short names only.
+%~a1  Expands %1 to the file attributes.
+%~t1  Expands %1 to the date and time of file.
+%~z1  Expands %1 to the size of the file.
+%~$PATH:1 Searches the directories listed in the PATH environment variable, and expands %1 to the fully qualified name of the first directory found. If the environment variable name is not defined or the file is not found by the search, then this modifier expands to the empty string.
+
+Batch Parameter with Modifier Description
+%~dp1 Expands %1 to a drive letter and path only.
+%~nx1 Expands %1 to a file name and extension only.
+%~dp$PATH:1 Searches the directories listed in the PATH environment variable for %1, and then expands to the drive letter and path of the first directory found.
+%~ftza1 Expands %1 to display output similar to the dir command.
+In the above examples, %1 and PATH can be replaced by other valid values. The %~ syntax is terminated by a valid argument number. The %~ modifiers cannot be used with %*.
+
+Remarks
+Using batch parameters:
+
+Batch parameters can contain any information that you can pass to a batch program, including command-line options, file names, the batch parameters %0 through %9, and variables (for example, %baud%).
+
+Using the <label> parameter:
+
+By using call with the <label> parameter, you create a new batch file context and pass control to the statement after the specified label. The first time the end of the batch file is encountered (that is, after jumping to the label), control returns to the statement after the call statement. The second time the end of the batch file is encountered, the batch script is exited.
+
+Using pipes and redirection symbols:
+
+Do not use pipes (|) or redirection symbols (< or >) with call.
+
+Making a recursive call
+
+You can create a batch program that calls itself. However, you must provide an exit condition. Otherwise, the parent and child batch programs can loop endlessly.
+
+Working with command extensions
+
+If command extensions are enabled, call accepts <label> as the target of the call. The correct syntax is call :<label> <arguments>.
+
+Examples
+To run the checknew.bat program from another batch program, type the following command in the parent batch program:
+
+
+Copy
+call checknew
+If the parent batch program accepts two batch parameters and you want it to pass those parameters to checknew.bat, type the following command in the parent batch program:
+
+
+Copy
+call checknew %1 %2
+
+The two batch files are executed both by same Windows command processor process and share therefore all environment variables.
+
+Main.bat:
+
+@echo off
+set "MyVariable="
+call Function.bat hello
+echo MyVariable=%MyVariable%
+Function.bat:
+
+@echo off
+rem Some code ...
+set "MyVariable=%~1"
+
+It could be that Function.bat uses for some reason command SETLOCAL. In this case all environment variables defined as well as all modifications made on environment variables after the command SETLOCAL are lost after corresponding ENDLOCAL. This command is implicitly called by Windows command processor on exiting execution of a batch file for each SETLOCAL not yet completed with explicit execution of corresponding ENDLOCAL. Read this answer for details about the commands SETLOCAL and ENDLOCAL.
+
+It is necessary to explicitly set an environment variable on same command line as the command ENDLOCAL with using immediate environment variable expansion to pass value of an environment variable from current environment variables list to previous environment variables list.
+
+Function.bat:
+
+@echo off
+setlocal EnableExtensions DisableDelayedExpansion
+rem Some code ...
+set "MyVariable=%~1"
+endlocal & set "MyVariable=%MyVariable%"
+The last command line is preprocessed first by Windows command interpreter to
+
+endlocal   & set "MyVariable=hello"
+So the command line after preprocessing does not contain anymore any variable reference. The command ENDLOCAL restores previous environment which results in deletion of environment variable MyVariable. But the second command SET specified on same command line sets this variable once again with the value hello in restored environment.
+
+We need to pass one extra variable from A.bat to B.bat
+
+A.bat
+
+@echo off
+set str1=1,2,3,4,5
+set str2=6,7,8,9
+set str3=
+call B.bat %str1% %str2% %str3% >nul
+echo str3 %str3%
+B.bat
+
+@echo off
+set str1=%1
+set str2=%2
+set str3=%str1%,%str2%
+
+REM      012345
+SET str1=ABCDEF
+
+ECHO The string is: '%str1%'
+ECHO [0, 1 ]  = %str1:~0,1%
+ECHO [2, 2 ]  = %str1:~2,2%
+ECHO [3,   ]  = %str1:~3%
+ECHO [-2,  ]  = %str1:~-2%
+ECHO [1, -3]  = %str1:~1,-3%
+
+ECHO [1, -2]  = %str1:~1,-2%
+ECHO [0, -1]  = %str1:~0,-1%
+ECHO [0, -2]  = %str1:~0,-2%
+
+set /P phrase=Enter string: 
+set /P match=Find what: 
+set /P replace=Replace with what: 
+
+echo The phrase is: %phrase%
+call set phrase=%%phrase:%match%=%replace%%%
+echo After substitution, the phrase is: %phrase%
+
+
+
+
+
+
+
